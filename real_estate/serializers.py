@@ -5,7 +5,8 @@ from .validators import validate_appointment_overlap
 class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id', 'username', 'email']
+        read_only_fields = ['id']
 
 class HouseImageSerializer(serializers.ModelSerializer):
     class Meta:

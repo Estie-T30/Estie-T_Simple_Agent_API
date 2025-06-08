@@ -31,6 +31,10 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'real_estate.User'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),   # default is 5 minutes

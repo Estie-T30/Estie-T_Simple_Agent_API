@@ -138,12 +138,19 @@ class HouseDetailView(APIView):
             return Response({'detail': 'House deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 class AppointmentListCreateView(APIView):
-    permission_classes = [IsTenantUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        appointments = Appointment.objects.filter(tenant=request.user)
+        user = request.user
+        if user.is_tenant:
+              appointments = Appointment.objects.filter(tenant=user)
+        elif user.is_owner or user.is_staff:
+                appointments = Appointment.objects.all()
+        else:
+             appointments = Appointment.objects.none()  # No appointments for other users
+
         paginator = PageNumberPagination()
-        paginator.page_size = 10  # Set the number of items per page
+        paginator.page_size = 10
         paginated_appointments = paginator.paginate_queryset(appointments, request)
         serializer = AppointmentSerializer(paginated_appointments, many=True)
         return paginator.get_paginated_response(serializer.data)
